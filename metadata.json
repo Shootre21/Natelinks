@@ -1,0 +1,7 @@
+{
+  "name": "Socialistnate - AI-Powered Bio Links",
+  "description": "A stylish, AI-powered link-in-bio page that lets you manage and edit your profile using natural language through the Gemini API.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
