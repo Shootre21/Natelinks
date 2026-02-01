@@ -1,25 +1,10 @@
 
-import React, { useState, useEffect } from 'react';
-import { ProfileData } from './types';
+import React from 'react';
 import { INITIAL_PROFILE } from './constants';
 import { LinkButton } from './components/LinkButton';
 
 const App: React.FC = () => {
-  const [profile, setProfile] = useState<ProfileData>(() => {
-    const saved = localStorage.getItem('shootre_profile');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return INITIAL_PROFILE;
-      }
-    }
-    return INITIAL_PROFILE;
-  });
-
-  useEffect(() => {
-    localStorage.setItem('shootre_profile', JSON.stringify(profile));
-  }, [profile]);
+  const profile = INITIAL_PROFILE;
 
   return (
     <div className={`min-h-screen bg-gradient-to-br ${profile.theme.backgroundGradient} flex flex-col items-center px-4 py-16 transition-all duration-1000 overflow-x-hidden`}>

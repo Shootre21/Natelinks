@@ -4,7 +4,7 @@ import { ProfileData } from './types';
 export const INITIAL_PROFILE: ProfileData = {
   handle: "@socialistnate",
   displayName: "Socialistnate",
-  avatarUrl: "https://images.unsplash.com/photo-1550985616-10810253b84d?auto=format&fit=crop&q=80&w=400&h=400",
+  avatarUrl: "https://flagemoji.com/wp-content/uploads/2020/02/Flag_of_Chile.svg",
   bio: "Author, Creator of Delta Press, and Music Producer",
   links: [
     { 
