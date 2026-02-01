@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { INITIAL_PROFILE } from './constants';
 import { LinkButton } from './components/LinkButton';
