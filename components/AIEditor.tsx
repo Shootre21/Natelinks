@@ -1,1 +1,3 @@
-// Deleted to simplify app and fix build error
+import React from 'react';
+// Empty component to satisfy build dependencies
+export const AIEditor: React.FC = () => null;
