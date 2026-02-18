@@ -1,9 +1,9 @@
-
 export interface LinkItem {
   id: string;
   label: string;
   url: string;
   icon?: string;
+  isPlaceholder?: boolean;
 }
 
 export interface ProfileData {
@@ -21,4 +21,25 @@ export interface ProfileData {
     email?: string;
     phone?: string;
   };
+}
+
+export interface ClickEvent {
+  id?: string;
+  created_at?: string;
+  slug: string;
+  url: string;
+  referrer: string;
+  browser: string;
+  os: string;
+  device: 'desktop' | 'mobile' | 'tablet' | 'bot';
+  country: string;
+}
+
+export interface AnalyticsSummary {
+  todayTotal: number;
+  overallTotal: number;
+  topLinks: { slug: string; count: number }[];
+  byCountry: { country: string; count: number }[];
+  byDevice: { device: string; count: number }[];
+  byReferrer: { referrer: string; count: number }[];
 }
