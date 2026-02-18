@@ -13,6 +13,36 @@ const parseUA = (ua: string) => {
   return { browser, os, device };
 };
 
+export const trackVisit = async () => {
+  try {
+    const ua = navigator.userAgent;
+    const { browser, os, device } = parseUA(ua);
+    
+    let country = 'Unknown';
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      const data = await res.json();
+      country = data.country_name || 'Unknown';
+    } catch (e) {
+      console.warn("Could not fetch GeoIP");
+    }
+
+    const event: ClickEvent = {
+      slug: 'page_visit',
+      url: window.location.href,
+      referrer: document.referrer || 'direct',
+      browser,
+      os,
+      device,
+      country
+    };
+
+    await supabase.from('clicks').insert([event]);
+  } catch (err) {
+    console.error('Visit tracking failed:', err);
+  }
+};
+
 export const trackClick = async (slug: string, url: string) => {
   if (url === '#') return;
 
@@ -20,7 +50,6 @@ export const trackClick = async (slug: string, url: string) => {
     const ua = navigator.userAgent;
     const { browser, os, device } = parseUA(ua);
     
-    // Attempt to get country from cloudflare headers or public API
     let country = 'Unknown';
     try {
       const res = await fetch('https://ipapi.co/json/');
@@ -57,11 +86,12 @@ export const fetchAnalytics = async () => {
 
   if (error) throw error;
 
-  const todayClicks = allClicks.filter(c => new Date(c.created_at) >= today);
+  const todayData = allClicks.filter(c => new Date(c.created_at) >= today);
 
-  const aggregate = (arr: any[], key: string) => {
+  const aggregate = (arr: any[], key: string, filterPageVisits = false) => {
     const counts: Record<string, number> = {};
-    arr.forEach(item => {
+    const filteredArr = filterPageVisits ? arr.filter(i => i.slug !== 'page_visit') : arr;
+    filteredArr.forEach(item => {
       counts[item[key]] = (counts[item[key]] || 0) + 1;
     });
     return Object.entries(counts)
@@ -69,13 +99,19 @@ export const fetchAnalytics = async () => {
       .sort((a, b) => b.count - a.count);
   };
 
+  const visits = allClicks.filter(c => c.slug === 'page_visit');
+  const clicks = allClicks.filter(c => c.slug !== 'page_visit');
+
   return {
-    todayTotal: todayClicks.length,
-    overallTotal: allClicks.length,
-    topLinks: aggregate(allClicks, 'slug'),
+    todayTotalVisits: todayData.filter(c => c.slug === 'page_visit').length,
+    todayTotalClicks: todayData.filter(c => c.slug !== 'page_visit').length,
+    overallTotalVisits: visits.length,
+    overallTotalClicks: clicks.length,
+    topLinks: aggregate(clicks, 'slug'),
     byCountry: aggregate(allClicks, 'country'),
     byDevice: aggregate(allClicks, 'device'),
     byReferrer: aggregate(allClicks, 'referrer'),
-    recent: allClicks.slice(0, 10)
+    byBrowser: aggregate(allClicks, 'browser'),
+    recent: allClicks.slice(0, 15)
   };
 };

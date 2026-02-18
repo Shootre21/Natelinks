@@ -4,6 +4,7 @@ import { LinkButton } from './components/LinkButton';
 import { Login } from './components/Login';
 import { AdminDashboard } from './components/AdminDashboard';
 import { supabase, getSession } from './services/supabase';
+import { trackVisit } from './services/analyticsService';
 import { Settings, Lock } from 'lucide-react';
 
 type ViewState = 'profile' | 'login' | 'admin';
@@ -14,6 +15,9 @@ const App: React.FC = () => {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    // Track visit on mount
+    trackVisit();
+
     getSession().then(session => {
       setUser(session?.user ?? null);
     });
