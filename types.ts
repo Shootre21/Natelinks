@@ -33,6 +33,8 @@ export interface ClickEvent {
   os: string;
   device: 'desktop' | 'mobile' | 'tablet' | 'bot';
   country: string;
+  ip?: string;
+  isp?: string;
 }
 
 export interface AnalyticsSummary {
